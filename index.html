@@ -681,13 +681,13 @@
 
     /* Scroll reveal */
     .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible {
       opacity: 1;
       transform: translateY(0);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.hidden {
+      opacity: 0;
+      transform: translateY(30px);
     }
 
     /* Responsive */
@@ -1055,4 +1055,18 @@
     // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver(entries => {
-      entries.forEach((entry
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.remove('hidden'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -50px 0px' });
+    // Start all as hidden, then reveal on scroll
+    reveals.forEach(el => {
+      el.classList.add('hidden');
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
